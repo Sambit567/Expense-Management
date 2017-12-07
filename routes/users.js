@@ -2,7 +2,7 @@ var express = require('express')
 var app = express()
 var ObjectId = require('mongodb').ObjectId
 
-// SHOW LIST OF USERS
+// SHOW LIST OF items
 app.get('/', function(req, res, next) {	
 	// fetch and sort users collection by id in descending order
 	req.db.collection('users').find().sort({"_id": -1}).toArray(function(err, result) {
@@ -10,20 +10,20 @@ app.get('/', function(req, res, next) {
 		if (err) {
 			req.flash('error', err)
 			res.render('user/list', {
-				title: 'User List', 
+				title: 'Items List', 
 				data: ''
 			})
 		} else {
 			// render to views/user/list.ejs template file
 			res.render('user/list', {
-				title: 'User List', 
+				title: 'Items List', 
 				data: result
 			})
 		}
 	})
 })
 
-// SHOW ADD USER FORM
+// SHOW ADD item FORM
 app.get('/add', function(req, res, next){	
 	// render to views/user/add.ejs
 	res.render('user/add', {
@@ -34,7 +34,7 @@ app.get('/add', function(req, res, next){
 	})
 })
 
-// ADD NEW USER POST ACTION
+// ADD NEW item POST ACTION
 app.post('/add', function(req, res, next){	
 	req.assert('name', 'Item Name is required').notEmpty()           //Validate item name
 	req.assert('amount', 'amount is required').notEmpty()             //Validate amount
@@ -48,11 +48,7 @@ app.post('/add', function(req, res, next){
 		/********************************************
 		 * Express-validator module
 		 
-		req.body.comment = 'a <span>comment</span>';
-		req.body.username = '   a user    ';
-
-		req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
-		req.sanitize('username').trim(); // returns 'a user'
+		
 		********************************************/
 		var user = {
 			name: req.sanitize('name').escape().trim(),
@@ -74,15 +70,15 @@ app.post('/add', function(req, res, next){
 			} else {				
 				req.flash('success', 'Data added successfully!')
 				
-				// redirect to user list page				
+				// redirect to item list page				
 				res.redirect('/users')
 				
 				// render to views/user/add.ejs
 				/*res.render('user/add', {
-					title: 'Add New User',
+					title: 'Add New item',
 					name: '',
-					age: '',
-					email: ''					
+					amount: '',
+					description: ''					
 				})*/
 			}
 		})		
@@ -107,7 +103,7 @@ app.post('/add', function(req, res, next){
     }
 })
 
-// SHOW EDIT USER FORM
+// SHOW EDIT items FORM
 app.get('/edit/(:id)', function(req, res, next){
 	var o_id = new ObjectId(req.params.id)
 	req.db.collection('users').find({"_id": o_id}).toArray(function(err, result) {
@@ -115,7 +111,7 @@ app.get('/edit/(:id)', function(req, res, next){
 		
 		// if user not found
 		if (!result) {
-			req.flash('error', 'User not found with id = ' + req.params.id)
+			req.flash('error', 'Items not found with id = ' + req.params.id)
 			res.redirect('/users')
 		}
 		else { // if user found
@@ -145,11 +141,7 @@ app.put('/edit/(:id)', function(req, res, next) {
 		/********************************************
 		 * Express-validator module
 		 
-		req.body.comment = 'a <span>comment</span>';
-		req.body.username = '   a user    ';
-
-		req.sanitize('comment').escape(); // returns 'a &lt;span&gt;comment&lt;/span&gt;'
-		req.sanitize('username').trim(); // returns 'a user'
+		
 		********************************************/
 		var user = {
 			name: req.sanitize('name').escape().trim(),
@@ -205,11 +197,11 @@ app.delete('/delete/(:id)', function(req, res, next) {
 	req.db.collection('users').remove({"_id": o_id}, function(err, result) {
 		if (err) {
 			req.flash('error', err)
-			// redirect to users list page
+			// redirect to item list page
 			res.redirect('/users')
 		} else {
 			req.flash('success', 'User deleted successfully! id = ' + req.params.id)
-			// redirect to users list page
+			// redirect to item list page
 			res.redirect('/users')
 		}
 	})	
