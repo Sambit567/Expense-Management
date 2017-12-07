@@ -1,4 +1,4 @@
-(C) cpoyright sambit Kumar padhy
+(C) copyright sambit Kumar padhy
 
 
 **Start MongoDB server**
